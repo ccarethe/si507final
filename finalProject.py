@@ -1,6 +1,7 @@
 import requests
 import json
 import os
+from textwrap import dedent
 
 def writeFile(filename, data):
     '''Write data to file.
@@ -75,12 +76,23 @@ class Park():
         self.name = name
         self.url = url
         self.description = description
-        self.latlong = {'lat': lat, 'long': long}
+        self.latlong = (lat, long)
         self.activities = [item['name'] for item in activities]
         self.topics = [item['name'] for item in topics]
         self.state = state
         self.directionsUrl = directions
         self.addresses = addresses
+    
+    def printInfo(self):
+        '''Print park information.'''
+
+        print(dedent(f'''
+                    Park name: {self.name}
+                    Location (lat, long): {self.latlong}
+                    Activities: {self.activities}
+                    State: {self.state}
+                    '''))
+        
 
 
 
@@ -91,4 +103,23 @@ class Park():
 if __name__ == "__main__":
 
     parkData = checkParksCache()['data']
+
+    parks = {}
     
+    for park in parkData:
+        name = park['fullName']
+        url = park['url']
+        description = park['description']
+        lat = park['latitude']
+        long = park['longitude']
+        activities = park['activities']
+        topics = park['topics']
+        state = park['states']
+        directions = park['directionsUrl']
+        addresses = park['addresses']
+
+        park = Park(name, url, description, lat, long, activities, topics, state, directions, addresses)
+
+        parks[park.name] = park
+    
+    # parks['Wing Luke Museum Affiliated Area'].printInfo()
